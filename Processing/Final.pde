@@ -10,21 +10,21 @@ Arduino arduino;
 
 // Definicao das variaveis
 
-int sensorIn = A0;
+int sensorIn = 0;
 
 int mVperAmp = 100; // use 100 for 20A Module and 66 for 30A Module
 
-double Voltage = 0;
+float Voltage = 0;
 
-double VRMS = 0;
+float VRMS = 0;
 
-double AmpsRMS = 0;
-
- 
+float AmpsRMS = 0;
 
  
 
-int pinoTensao = A2; //PINO ANALÓGICO EM QUE O SENSOR ESTÁ CONECTADO
+ 
+
+int pinoTensao = 2; //PINO ANALÓGICO EM QUE O SENSOR ESTÁ CONECTADO
 
 float tensaoEntrada = 0.0; //VARIÁVEL PARA ARMAZENAR O VALOR DE TENSÃO DE ENTRADA DO SENSOR
 
@@ -36,7 +36,7 @@ float valorR2 = 7500.0; // VALOR DO RESISTOR 2 DO DIVISOR DE TENSÃO
 
 int leituraSensor = 0; //VARIÁVEL PARA ARMAZENAR A LEITURA DO PINO ANALÓGICO
 
- 
+ int x=1;
 
 float getVPP() //FUNÇÃO QUE DEFINE O VALOR DE PICO DA ONDA SENOIDAL DA CORRENTE AC PARA CALCULAR TENSÃO EFICAZ E CORRENTE EFICAZ (RMS)
 
@@ -54,13 +54,13 @@ float getVPP() //FUNÇÃO QUE DEFINE O VALOR DE PICO DA ONDA SENOIDAL DA CORRENT
 
  
 
-   uint32_t start_time = millis();
+   int start_time = millis();
 
    while((millis()-start_time) < 1000) //COLETA AMOSTRAS DURANTE UM SEGUNDO
 
    {
 
-       readValue = analogRead(sensorIn);// SE TEM NOVO MAX
+       readValue = arduino.analogRead(sensorIn);// SE TEM NOVO MAX
 
       
 
@@ -118,11 +118,11 @@ arduino = new Arduino(this, Arduino.list()[0], 57600);
 
 // Define o pino do led como saida
 
-arduino.pinMode(sensorIN, Arduino.INPUT);
+arduino.pinMode(0, Arduino.INPUT);
 
 // Define o pino do botao como entrada
 
-arduino.pinMode(pinoTensao, Arduino.INPUT);
+arduino.pinMode(2, Arduino.INPUT);
 
  ellipseMode(RADIUS);
 
@@ -168,7 +168,6 @@ textSize(31);
 
 fill(0);  // Cor preta
 
-text("Pi 3 - Projeto Bike", width/2,30);
 
 // Final do cabecalho
 
@@ -226,9 +225,9 @@ VRMS = (Voltage/2.0) *0.707;
 
 //Colocar os pinos em uma variável e usar um map(pino, 0, 1023, 40, 405)
 
- int y1=map(tensaoMedida,0,25,40,222);
+ float y1=map(tensaoMedida,0,25,40,222);
 
-int y2=map(AmpsRMS,-20,20,40,405);
+float y2=map(AmpsRMS,-20,20,40,405);
 
 //Lembrar que a corrente é alternada então usar todos, tensão usar a metade
 
@@ -240,7 +239,7 @@ int y2=map(AmpsRMS,-20,20,40,405);
 
   stroke(128);
 
-  line(1000-x,AmpsRMS, 1000-x, AmpsRMS-5);
+  line(1000-x,y2, 1000-x, y2-5);
 
   
 
@@ -262,7 +261,65 @@ int y2=map(AmpsRMS,-20,20,40,405);
 
     stroke(0);
 
-    line(x,291, x, 199);
+    background(0);
+    
+     // Inicio do cabecalho
+
+// Desenha o retangulo laranja
+
+fill(0,250,154);   // Cor preenchimento
+
+rect(0,0,1000,40);
+
+// Define o tamanho da fonte
+
+textSize(31);
+
+// Define a cor e imprime o texto
+
+fill(0);  // Cor preta
+
+text("Pi 3 - Bike EGBM", width/2,30);
+
+// Final do cabecalho
+
+ fill(0,250,154);   // Cor preenchimento
+
+rect(0,460,1000,40);
+
+// Define o tamanho da fonte
+
+textSize(31);
+
+// Define a cor e imprime o texto
+
+fill(0);  // Cor preta
+
+text("Pi 3 - Projeto Bike", width/2,30);
+
+// Final do cabecalho
+
+  
+
+ // Valores medidos
+
+textSize(20);
+
+fill(255);
+
+text("Tensão: "+tensaoMedida + "V", 65,405); //Colocar a variável da tensão
+
+textSize(20);
+
+fill(255);
+
+text("Corrente: "+ AmpsRMS +"A", 72,425); //Colocar a variável da tensão
+
+textSize(20);
+
+fill(255);
+
+text("Potência: "+(tensaoMedida*AmpsRMS)+"W", 72,445); //Colocar a variável da tensão
 
   }
 
@@ -270,6 +327,6 @@ int y2=map(AmpsRMS,-20,20,40,405);
 
   // Aguarda 10 milisegundos e reinicia o processo
 
-  delay(100);
+  delay(10);
 
 }
