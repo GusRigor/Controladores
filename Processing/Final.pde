@@ -56,11 +56,11 @@ float getVPP() //FUNÇÃO QUE DEFINE O VALOR DE PICO DA ONDA SENOIDAL DA CORRENT
 
    int start_time = millis();
 
-   while((millis()-start_time) < 1000) //COLETA AMOSTRAS DURANTE UM SEGUNDO
+   while((millis()-start_time) < 100) //COLETA AMOSTRAS DURANTE UM SEGUNDO
 
    {
 
-       readValue = arduino.analogRead(sensorIn);// SE TEM NOVO MAX
+       readValue = arduino.analogRead(0);// SE TEM NOVO MAX
 
       
 
@@ -175,25 +175,6 @@ fill(0);  // Cor preta
 
  // Valores medidos
 
-textSize(20);
-
-fill(255);
-
-text("Tensão: "+tensaoMedida + "V", 65,405); //Colocar a variável da tensão
-
-textSize(20);
-
-fill(255);
-
-text("Corrente: "+ AmpsRMS +"A", 72,425); //Colocar a variável da tensão
-
-textSize(20);
-
-fill(255);
-
-text("Potência: "+(tensaoMedida*AmpsRMS)+"W", 72,445); //Colocar a variável da tensão
-
- 
 
 }
 
@@ -201,17 +182,18 @@ void draw()
 
 {
 
-   Voltage = getVPP();
 
-VRMS = (Voltage/2.0) *0.707;
+   Voltage = arduino.analogRead(0);
 
- AmpsRMS = (((VRMS * 1000)/mVperAmp)-0.12);
+   VRMS = (Voltage/2.0) *0.707;
+
+   AmpsRMS = (((VRMS * 1000)/mVperAmp));
 
  
 
  
 
-  leituraSensor = arduino.analogRead(pinoTensao); //FAZ A LEITURA DO PINO ANALÓGICO E ARMAZENA NA VARIÁVEL O VALOR LIDO
+  leituraSensor = arduino.analogRead(2); //FAZ A LEITURA DO PINO ANALÓGICO E ARMAZENA NA VARIÁVEL O VALOR LIDO
 
   tensaoEntrada = (leituraSensor * 5.0) / 1024.0; //VARIÁVEL RECEBE O RESULTADO DO CÁLCULO
 
@@ -227,7 +209,7 @@ VRMS = (Voltage/2.0) *0.707;
 
  float y1=map(tensaoMedida,0,25,40,222);
 
-float y2=map(AmpsRMS,-20,20,40,405);
+float y2=map(AmpsRMS,-2,2,40,405);
 
 //Lembrar que a corrente é alternada então usar todos, tensão usar a metade
 
@@ -257,7 +239,7 @@ float y2=map(AmpsRMS,-20,20,40,405);
 
   {
 
-    x = 0;
+    x = 1;
 
     stroke(0);
 
@@ -294,8 +276,6 @@ textSize(31);
 // Define a cor e imprime o texto
 
 fill(0);  // Cor preta
-
-text("Pi 3 - Projeto Bike", width/2,30);
 
 // Final do cabecalho
 
